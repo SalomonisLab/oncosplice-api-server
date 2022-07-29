@@ -3,7 +3,7 @@ function databaseQueryHelper(cancerName)
 	var cancerQuerySuffix = cancerName == "AML_Leucegene" ? "" : "_TCGA";
 	const queryHelperMap = {
 		"META" : {
-			"QUERY" : "SELECT * FROM ".concat(cancerName).concat(cancerQuerySuffix).concat("_META"),
+			"QUERY" : "FROM ".concat(cancerName).concat(cancerQuerySuffix).concat("_META"),
 			"COLUMNS" : cancerName.concat("/Columns"),
 			"RANGE" : cancerName.concat("/Range")
 		},
@@ -16,6 +16,7 @@ function databaseQueryHelper(cancerName)
 			"QUERY" : "SELECT * FROM ".concat(cancerName).concat(cancerQuerySuffix).concat("_SPLC")
 		}
 	}
+	return queryHelperMap;
 }
 
 module.exports.databaseQueryHelper = databaseQueryHelper;

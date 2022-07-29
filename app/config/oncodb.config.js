@@ -1,6 +1,7 @@
 const { Pool} = require('pg')
+const fs = require('fs');
 
-const currentFileContents = fs.readFileSync("../../credentials.txt", 'utf-8');
+const currentFileContents = fs.readFileSync("credentials.txt", 'utf-8');
 var credentials = currentFileContents.split("#");
 const dbCredentials = new Pool({
   user: credentials[0],

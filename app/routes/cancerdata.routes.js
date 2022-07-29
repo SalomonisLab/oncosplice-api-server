@@ -1,12 +1,15 @@
+const { uiFields } = require("../controllers/uiFields");
+
 module.exports = app => {
     //const datasets = require("../controllers/cancerdata.controller.js");
 
     var router = require("express").Router();
 
     // Retrieve all Datasets
-    router.get("/", datasets.testQuery);
+    //router.get("/", datasets.testQuery);
 
-    /*router.post("/", datasets.getUiFields);
+    router.post("/", uiFields);
+    /*
 
     router.post("/", datasets.getSignatureList);
 
