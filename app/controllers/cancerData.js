@@ -19,32 +19,38 @@ async function cancerData(req, res, next){
 		try{
 		const outputObject = {};
 		outputObject["meta"] = {};
+		outputObject["range"] = {};
 	    const queryHelperMap = databaseQueryHelper(req.body.data);
 	    const clinicalMetadataResult = await dbCredentials.query("SELECT * ".concat(queryHelperMap["META"]["QUERY"]));
 	    const promises = clinicalMetadataResult.fields.map(async element => {
 	    	const fieldName = element.name;
+	    	outputObject["meta"][fieldName] = {};
 	    	outputObject["meta"][fieldName]["values"] = [];
 	    	outputObject["meta"][fieldName]["type"] = "notset";
 	    	outputObject["meta"][fieldName]["usableUniqueValues"] = [];
 			const fieldEntries =  await dbCredentials.query("SELECT DISTINCT ".concat(fieldName).concat(" ").concat(queryHelperMap["META"]["QUERY"]));
+			var nonnumset = 0;
 			fieldEntries.rows.forEach(row => {
+				//console.log("ROWPRINT", row[fieldName]);
 				const metaValueLength = outputObject["meta"][fieldName]["values"].length;
 				const metaValue = outputObject["meta"][fieldName]["values"];
+				//console.log(isNaN(row[fieldName]), "MATCHFAIL");
 				if(outputObject["meta"][fieldName]["type"] != "nonnum")
 				{
-					if(typeof metaValue == "string")
+					if(isNaN(row[fieldName]) == true)
 					{
-						if(metaValue == /NA|-|nan|--|---|\s/g || metaValue.length == 0){
-							continue;
+						if(row[fieldName].match(/NA|-|nan|--|---|\s/g) != null || row[fieldName].length == 0){
+							outputObject["meta"][fieldName]["type"] = "num";
 						}
 						else{
+							//console.log(row[fieldName].match(/NA|-|nan|--|---|\s/g), "MATCHFAIL");
 							outputObject["meta"][fieldName]["type"] = "nonnum";
 						}
 					}
-					else if(typeof metaValue == "number")
+					else if(isNaN(row[fieldName]) == false)
 					{
 						let usableUniqueValues = outputObject["meta"][fieldName]["usableUniqueValues"];
-						usableUniqueValues[usableUniqueValues.length] = metaValue;
+						usableUniqueValues[usableUniqueValues.length] = parseFloat(row[fieldName]);
 						outputObject["meta"][fieldName]["type"] = "num";
 					}
 					else
@@ -56,8 +62,8 @@ async function cancerData(req, res, next){
 			});
 			if(outputObject["meta"][fieldName]["usableUniqueValues"].length > 20 && outputObject["meta"][fieldName]["type"] == "num")
 			{
-				let metaMax = parseInt(Math.max(outputObject["meta"][fieldName]["usableUniqueValues"]));
-				let metaMin = parseInt(Math.min(outputObject["meta"][fieldName]["usableUniqueValues"]));
+				let metaMax = Math.max(...outputObject["meta"][fieldName]["usableUniqueValues"]);
+				let metaMin = Math.min(...outputObject["meta"][fieldName]["usableUniqueValues"]);
 				let metaRange = metaMax - metaMin;
 				let boundary1 = (metaMin + parseInt((metaRange*0.33))).toString();
 				let boundary2 = (metaMax - parseInt((metaRange*0.33))).toString();
@@ -153,7 +159,7 @@ async function cancerData(req, res, next){
 
 		}
 		catch(error){
-			res.send("nope");
+			res.send(error);
 			return next(error);
 		}
 	}

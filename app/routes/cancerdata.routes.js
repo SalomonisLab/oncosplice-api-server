@@ -1,4 +1,4 @@
-const { uiFields } = require("../controllers/uiFields");
+const { cancerData } = require("../controllers/cancerData");
 
 module.exports = app => {
     //const datasets = require("../controllers/cancerdata.controller.js");
@@ -8,7 +8,7 @@ module.exports = app => {
     // Retrieve all Datasets
     //router.get("/", datasets.testQuery);
 
-    router.post("/", uiFields);
+    router.post("/", cancerData);
     /*
 
     router.post("/", datasets.getSignatureList);
