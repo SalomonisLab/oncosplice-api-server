@@ -4,16 +4,6 @@ const { dbCredentials } = require("../config/oncodb.config.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
 const { removeNewlinesAndUnderscores, changeSpecialCharsToBlank, cleanUpTranslator, convertToUnderscores } = require("../utilities/parsingFunctions.js");
 
-async function collectFieldEntries(outputObject, element, queryHelperMap){
-		const fieldName = element.name;
-		outputObject["meta"][fieldName] = [];
-		const fieldEntries =  await dbCredentials.query("SELECT DISTINCT ".concat(fieldName).concat(" FROM ").concat(queryHelperMap["META"]["QUERY"]));
-		fieldEntries.rows.forEach((row) => {
-			outputObject["meta"][fieldName][row] = row[fieldName];
-		});
-		return outputObject;
-}
-
 async function cancerData(req, res, next){
 	if (req.method == 'POST') {
 		try{
@@ -65,20 +55,10 @@ async function cancerData(req, res, next){
 			}
 			return fieldEntries;
 	    })
-		await Promise.all(promises);
+		
+	    const sigTranslater = {};
+		const sigTranslateQuery = await dbCredentials.query("SELECT * ".concat(queryHelperMap["META"]["QUERY"]));
 
-
-		/*fs.readdir(queryHelperMap["META"]["RANGE"], (err, files) => {
-			files.forEach(file => {
-				if(file == ".DS_Store"){break;}
-				var currentFile = queryHelperMap["META"]["RANGE"].concat("/").concat(file);
-				currentFileContents = fs.readFileSync(currentFile, 'utf-8');
-				content = currentFileContents.split("#");
-				refname = currentFile.substring(0, currentFile.length-4);
-				refname = changeSpecialCharsToBlank(refname);
-				outputObject["range"][refname] = content;
-			});
-		});*/
 	    //The below commented code must be changed to accomodate a no-file system.
 		/*
 				const sigTranslater = {};
@@ -148,7 +128,7 @@ async function cancerData(req, res, next){
 
 
 	    });*/
-	    
+	    await Promise.all(promises);
 		res.send(outputObject);
 
 		}

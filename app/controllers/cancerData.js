@@ -3,16 +3,7 @@ const fs = require('fs');
 const { dbCredentials } = require("../config/oncodb.config.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
 const { removeNewlinesAndUnderscores, changeSpecialCharsToBlank, cleanUpTranslator, convertToUnderscores } = require("../utilities/parsingFunctions.js");
-
-async function collectFieldEntries(outputObject, element, queryHelperMap){
-		const fieldName = element.name;
-		outputObject["meta"][fieldName] = [];
-		const fieldEntries =  await dbCredentials.query("SELECT DISTINCT ".concat(fieldName).concat(" FROM ").concat(queryHelperMap["META"]["QUERY"]));
-		fieldEntries.rows.forEach((row) => {
-			outputObject["meta"][fieldName][row] = row[fieldName];
-		});
-		return outputObject;
-}
+const { containsObject } = require("../utilities/generalFunctions.js")
 
 async function cancerData(req, res, next){
 	if (req.method == 'POST') {
@@ -71,78 +62,35 @@ async function cancerData(req, res, next){
 			}
 			return fieldEntries;
 	    })
+	    const sigTranslater = {};
+	    const sigNamesList = [];
+		const sigTranslateQuery = await dbCredentials.query(queryHelperMap["SIG"]["TRANSLATE"]);
+		sigTranslateQuery.rows.forEach(row => {
+			let psiEventSignature = (cleanUpTranslator(row["psi_event_signatures"])).toLowerCase();
+			let simpleName = row["simple_name"]
+			sigNamesList.push(psiEventSignature);
+			sigTranslater[psiEventSignature] = simpleName;
+			sigTranslater[simpleName] = psiEventSignature;
+		})
+		//sigTranslateQuery
+		outputObject["sigtranslate"] = sigTranslater;
+
+		const sigNamesQuery = await dbCredentials.query(queryHelperMap["SIG"]["QUERY"]);
+		sigNamesQuery.fields.forEach(element => {
+			let fieldName = element["name"];
+			if(fieldName != "uid"){
+				if(containsObject(fieldName, sigNamesList) == false)
+				{
+					sigNamesList.push(fieldName);
+				}
+			}
+		})
+
+		outputObject["sig"] = sigNamesList;
+		var numSamples = 0;
+	    var numRows = 0;
 		await Promise.all(promises);
-
-
-		/*fs.readdir(queryHelperMap["META"]["RANGE"], (err, files) => {
-			files.forEach(file => {
-				if(file == ".DS_Store"){break;}
-				var currentFile = queryHelperMap["META"]["RANGE"].concat("/").concat(file);
-				currentFileContents = fs.readFileSync(currentFile, 'utf-8');
-				content = currentFileContents.split("#");
-				refname = currentFile.substring(0, currentFile.length-4);
-				refname = changeSpecialCharsToBlank(refname);
-				outputObject["range"][refname] = content;
-			});
-		});*/
-	    //The below commented code must be changed to accomodate a no-file system.
-		/*
-				const sigTranslater = {};
-				const strNum = {};
-				var sigTranslateFile = queryHelperMap["SIG"]["TRANSLATE"];
-				var sigTCount = 0;
-				currentFileContents = fs.readFileSync(sigTranslateFile, 'utf-8');
-				currentFileContents.split(/\r?\n/).forEach(line =>  {
-					if(sigTCount > 0){
-						line = line.replaceAll("\n", "");
-						line = line.replaceAll("\r", "");
-						line = line.split("\t");
-						var psiGet = line[1];
-						var toSimple = line[2];
-						inputString = cleanUpTranslator(inputString);
-						sigTranslater[psiGet] = toSimple;
-						sigTranslater[toSimple] = psiGet;
-						strNum[(sigTCount-1)] = psiGet;
-					}
-					sigTCount += 1;
-				})
-
-				var sigFile = queryHelperMap["SIG"]["COLUMNS"];
-				const currentFileContents = fs.readFileSync(sigFile, 'utf-8');
-				currentFileContents = convertToUnderscores(currentFileContents);
-				currentFileContents = currentFileContents.split("#");
-				currentFileContents.shift();
-				var sigFields = currentFileContents;
-				currentFileContents = "";
-
-				var startCount = sigTCount-1;
-				var nonMatchers = [];
-
-				for(let i = 0; i < sigFields.length; i++)
-				{
-					var found = false;
-					for(let j = 0; j < strNum; j++)
-					{
-						if(sigFields[i] == strNum[j])
-						{
-							found = true;
-							break;
-						}
-					}
-					if(found){continue;}
-					else{
-						var nonMatcherAmount = nonMatchers.length;
-						nonMatchers[nonMatcherAmount] = sigFields[i];
-					}
-				}
-
-				for(let i = 0; i < nonMatchers.length; i++)
-				{
-					var strStrCount = strNum.length;
-					strNum[strStrCount] = nonMatchers[i];
-				}
-				
-				
+		/*				
 				$output_arr["sig"] = $strnum;
 
 				$numrows = $TABLE_DICT[$selected_cancer_type]["SPLC"]["ROWNUM"];
