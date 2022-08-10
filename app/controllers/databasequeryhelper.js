@@ -14,7 +14,7 @@ function databaseQueryHelper(cancerName)
 		},
 		"SPLC" : {
 			"ONE" : "SELECT * FROM ".concat(cancerName).concat(cancerQuerySuffix).concat("_SPLICE").concat(" LIMIT 1"),
-			"COUNT" : "SELECT COUNT(*) AS rowsCount FROM ".concat(cancerName).concat(cancerQuerySuffix).concat("_SPLICE")
+			"COUNT" : "SELECT * FROM ".concat(cancerName).concat(cancerQuerySuffix).concat("_SPLICE")
 		}
 	}
 	return queryHelperMap;
