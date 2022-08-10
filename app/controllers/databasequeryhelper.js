@@ -13,7 +13,6 @@ function databaseQueryHelper(cancerName)
 			"TRANSLATE" : "SELECT * FROM SIGTRANSLATE WHERE cancer = '".concat(cancerName).concat(cancerQuerySuffix).concat("'")
 		},
 		"SPLC" : {
-			"ONE" : "SELECT * FROM ".concat(cancerName).concat(cancerQuerySuffix).concat("_SPLICE").concat(" LIMIT 1"),
 			"COUNT" : "SELECT * FROM ".concat(cancerName).concat(cancerQuerySuffix).concat("_SPLICE")
 		}
 	}

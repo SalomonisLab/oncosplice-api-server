@@ -90,10 +90,9 @@ async function cancerData(req, res, next){
 		var numSamples = 0;
 	    var numRows = 0;
 
-	    const countSplcColQuery = await dbCredentials.query(queryHelperMap["SPLC"]["ONE"]);
-	    numSamples = Object.keys(countSplcColQuery.rows[0]).length - 11;
-	    const countSplcRowQuery = await dbCredentials.query(queryHelperMap["SPLC"]["COUNT"]);
-	    numRows = countSplcRowQuery.rowCount;
+	    const countSplcQuery = await dbCredentials.query(queryHelperMap["SPLC"]["COUNT"]);
+	    numSamples = Object.keys(countSplcQuery.rows[0]).length - 11;
+	    numRows = countSplcQuery.rowCount;
 	    outputObject["qbox"] = {};
 	    outputObject["qbox"]["columns"] = numSamples;
 	    outputObject["qbox"]["rows"] = numRows;
