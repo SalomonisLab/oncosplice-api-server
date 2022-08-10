@@ -89,6 +89,14 @@ async function cancerData(req, res, next){
 		outputObject["sig"] = sigNamesList;
 		var numSamples = 0;
 	    var numRows = 0;
+
+	    const countSplcColQuery = await dbCredentials.query(queryHelperMap["SPLC"]["ONE"]);
+	    numSamples = Object.keys(countSplcColQuery.rows[0]).length - 11;
+	    const countSplcRowQuery = await dbCredentials.query(queryHelperMap["SPLC"]["COUNT"]);
+	    numRows = countSplcRowQuery.rows[0].rowsCount;
+	    outputObject["qbox"] = {};
+	    outputObject["qbox"]["columns"] = numSamples;
+	    outputObject["qbox"]["rows"] = numRows;
 		await Promise.all(promises);
 		/*				
 				$output_arr["sig"] = $strnum;
