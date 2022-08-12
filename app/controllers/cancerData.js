@@ -5,6 +5,8 @@ const { databaseQueryHelper } = require("./databasequeryhelper.js");
 const { removeNewlinesAndUnderscores, changeSpecialCharsToBlank, cleanUpTranslator, convertToUnderscores } = require("../utilities/parsingFunctions.js");
 const { containsObject } = require("../utilities/generalFunctions.js")
 
+//This code retrieves the properties of a cancer study. The signatures, clinical metadata, and dataset metrics
+//(number of rows and columns) This is used for populating the UI on the front end.
 async function cancerData(req, res, next){
 	if (req.method == 'POST') {
 		try{
@@ -22,19 +24,23 @@ async function cancerData(req, res, next){
 			const fieldEntries =  await dbCredentials.query("SELECT DISTINCT ".concat(fieldName).concat(" ").concat(queryHelperMap["META"]["QUERY"]));
 			var nonnumset = 0;
 			fieldEntries.rows.forEach(row => {
-				//console.log("ROWPRINT", row[fieldName]);
 				const metaValueLength = outputObject["meta"][fieldName]["values"].length;
 				const metaValue = outputObject["meta"][fieldName]["values"];
-				//console.log(isNaN(row[fieldName]), "MATCHFAIL");
 				if(outputObject["meta"][fieldName]["type"] != "nonnum")
 				{
 					if(isNaN(row[fieldName]) == true)
 					{
 						if(row[fieldName].match(/NA|-|nan|--|---|\s/g) != null || row[fieldName].length == 0){
-							outputObject["meta"][fieldName]["type"] = "num";
+							if(row[fieldName].length <= 3)
+							{
+								outputObject["meta"][fieldName]["type"] = "num";
+							}
+							else
+							{
+								outputObject["meta"][fieldName]["type"] = "nonnum";
+							}
 						}
 						else{
-							//console.log(row[fieldName].match(/NA|-|nan|--|---|\s/g), "MATCHFAIL");
 							outputObject["meta"][fieldName]["type"] = "nonnum";
 						}
 					}
@@ -59,6 +65,8 @@ async function cancerData(req, res, next){
 				let boundary1 = (metaMin + parseInt((metaRange*0.33))).toString();
 				let boundary2 = (metaMax - parseInt((metaRange*0.33))).toString();
 				outputObject["range"][fieldName] = [metaMin.toString().concat("-").concat(boundary1), boundary1.toString().concat("-").concat(boundary2), boundary2.concat("-").concat(metaMax.toString())];
+				//Free up object memory usage
+				outputObject["meta"][fieldName]["usableUniqueValues"] = undefined;
 			}
 			return fieldEntries;
 	    })
@@ -72,7 +80,7 @@ async function cancerData(req, res, next){
 			sigTranslater[psiEventSignature] = simpleName;
 			sigTranslater[simpleName] = psiEventSignature;
 		})
-		//sigTranslateQuery
+
 		outputObject["sigtranslate"] = sigTranslater;
 
 		const sigNamesQuery = await dbCredentials.query(queryHelperMap["SIG"]["QUERY"]);
@@ -96,19 +104,6 @@ async function cancerData(req, res, next){
 	    outputObject["qbox"]["columns"] = numSamples;
 	    outputObject["qbox"]["rows"] = numRows;
 		await Promise.all(promises);
-		/*				
-				$output_arr["sig"] = $strnum;
-
-				$numrows = $TABLE_DICT[$selected_cancer_type]["SPLC"]["ROWNUM"];
-				$numsamples = $TABLE_DICT[$selected_cancer_type]["SPLC"]["COLNUM"];
-
-				$output_arr["sigtranslate"] = $sigtranslater;
-				$output_arr["qbox"]["columns"] = $numsamples;
-				$output_arr["qbox"]["rows"] = $numrows;
-
-
-	    });*/
-	    
 		res.send(outputObject);
 
 		}
