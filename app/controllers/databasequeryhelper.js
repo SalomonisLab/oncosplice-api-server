@@ -1,5 +1,6 @@
 function databaseQueryHelper(cancerName)
 {
+	console.log(cancerName);
 	var cancerQuerySuffix = cancerName == "AML_Leucegene" ? "" : "_TCGA";
 	const queryHelperMap = {
 		"META" : {

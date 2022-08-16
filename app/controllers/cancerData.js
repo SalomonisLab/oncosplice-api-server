@@ -1,4 +1,3 @@
-var qs = require('querystring');
 const fs = require('fs');
 const { dbCredentials } = require("../config/oncodb.config.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
@@ -13,6 +12,7 @@ async function cancerData(req, res, next){
 		const outputObject = {};
 		outputObject["meta"] = {};
 		outputObject["range"] = {};
+		console.log("reqbody", req.body);
 	    const queryHelperMap = databaseQueryHelper(req.body.data);
 	    const clinicalMetadataResult = await dbCredentials.query("SELECT * ".concat(queryHelperMap["META"]["QUERY"]));
 	    const promises = clinicalMetadataResult.fields.map(async element => {
@@ -68,6 +68,7 @@ async function cancerData(req, res, next){
 				//Free up object memory usage
 				outputObject["meta"][fieldName]["usableUniqueValues"] = undefined;
 			}
+			outputObject["meta"][fieldName] = outputObject["meta"][fieldName]["values"];
 			return fieldEntries;
 	    })
 	    const sigTranslater = {};
