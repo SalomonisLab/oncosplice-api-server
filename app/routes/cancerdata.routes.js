@@ -1,4 +1,5 @@
 const { cancerData } = require("../controllers/cancerData");
+const { selectedMetaDataUiFields } = require("../controllers/selectedMetaDataUiFields");
 
 module.exports = app => {
     //const datasets = require("../controllers/cancerdata.controller.js");
@@ -8,7 +9,8 @@ module.exports = app => {
     // Retrieve all Datasets
     //router.get("/", datasets.testQuery);
 
-    router.post("/", cancerData);
+    router.post("/cancerdata", cancerData);
+    router.post("/getmetadata", selectedMetaDataUiFields);
     /*
 
     router.post("/", datasets.getSignatureList);
