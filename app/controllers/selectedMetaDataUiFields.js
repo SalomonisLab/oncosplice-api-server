@@ -2,6 +2,7 @@ const fs = require('fs');
 const { dbCredentials } = require("../config/oncodb.config.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
 
+//This function records the number of samples that exist for a given selection.
 async function selectedMetaDataUiFields(req, res, next){
 	if (req.method == 'POST') {
 		try{
@@ -16,6 +17,7 @@ async function selectedMetaDataUiFields(req, res, next){
 			var metaBaseQuery = "SELECT COUNT(*) ".concat(queryHelperMap["META"]["QUERY"]).concat(" WHERE");
 			var metaBaseCount = 0;
 			singleBaseFlag = 1;
+
 			//Check to see if the selected field has range or not.
 			if(selectedField.value.indexOf("-") != -1)
 			{
@@ -31,31 +33,21 @@ async function selectedMetaDataUiFields(req, res, next){
 			console.log("singleBaseQuery", singleBaseQuery);
 			
 			prevFields.forEach(field => {
+				//Check to see if the current field has range or not.
 				if(field.key.indexOf("-") != -1)
 				{
 					var numberstosearch = field.value.split("-");
-					if(metaBaseCount != 0)
-					{
-						metaBaseQuery = metaBaseQuery.concat(" AND ").concat(field.key).concat(" >= '").concat(numberstosearch[0]).concat("'");
-					}
-					else
-					{
-						metaBaseQuery = metaBaseQuery.concat(" ").concat(field.key).concat(" >= '").concat(numberstosearch[0]).concat("'");
-					}
-					metaBaseCount = metaBaseCount + 1;
+					let metaSuffixQuery = field.key.concat(" >= '").concat(numberstosearch[0]).concat("'");
+					metaBaseQuery = metaBaseCount != 0 ? metaBaseQuery.concat(" AND ") : metaBaseQuery.concat(" ");
+					metaBaseQuery = metaBaseQuery.concat(metaSuffixQuery);
 					metaBaseQuery = metaBaseQuery.concat(" AND ").concat(field.key).concat(" <= '").concat(numberstosearch[1]).concat("'");
-					metaBaseCount = metaBaseCount + 1;
+					metaBaseCount += 2;
 				}
 				else
 				{
-					if(metaBaseCount != 0)
-					{
-						metaBaseQuery = metaBaseQuery.concat(" AND ").concat(field.key).concat(" = '").concat(field.value).concat("'");
-					}
-					else
-					{
-						metaBaseQuery = metaBaseQuery.concat(" ").concat(field.key).concat(" = '").concat(field.value).concat("'");
-					}
+					let metaSuffixQuery = field.key.concat(" = '").concat(field.value).concat("'");
+					metaBaseQuery = metaBaseCount != 0 ? metaBaseQuery.concat(" AND ") : metaBaseQuery.concat(" ");
+					metaBaseQuery = metaBaseQuery.concat(metaSuffixQuery);
 					metaBaseCount = metaBaseCount + 1;
 				}				
 			})

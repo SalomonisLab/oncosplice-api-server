@@ -23,6 +23,8 @@ async function cancerData(req, res, next){
 	    	outputObject["meta"][fieldName]["usableUniqueValues"] = [];
 			const fieldEntries =  await dbCredentials.query("SELECT DISTINCT ".concat(fieldName).concat(" ").concat(queryHelperMap["META"]["QUERY"]));
 			var nonnumset = 0;
+			//Find the distinct values of each field and group them appropriately; log numerical/nan values
+			//This is for populating the UI appropriately.
 			fieldEntries.rows.forEach(row => {
 				const metaValueLength = outputObject["meta"][fieldName]["values"].length;
 				const metaValue = outputObject["meta"][fieldName]["values"];
@@ -50,6 +52,7 @@ async function cancerData(req, res, next){
 				}
 				metaValue[metaValueLength] = row[fieldName];
 			});
+			//Determine whether or not a given field is numerically ranged or not.
 			if(outputObject["meta"][fieldName]["usableUniqueValues"].length > 20 && outputObject["meta"][fieldName]["type"] == "num")
 			{
 				let metaMax = Math.max(...outputObject["meta"][fieldName]["usableUniqueValues"]);
