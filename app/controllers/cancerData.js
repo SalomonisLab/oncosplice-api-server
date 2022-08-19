@@ -31,14 +31,7 @@ async function cancerData(req, res, next){
 					if(isNaN(row[fieldName]) == true)
 					{
 						if(row[fieldName].match(/NA|-|nan|--|---|\s/g) != null || row[fieldName].length == 0){
-							if(row[fieldName].length <= 3)
-							{
-								outputObject["meta"][fieldName]["type"] = "num";
-							}
-							else
-							{
-								outputObject["meta"][fieldName]["type"] = "nonnum";
-							}
+							outputObject["meta"][fieldName]["type"] = row[fieldName].length <= 3 ? "num" : "nonnum";
 						}
 						else{
 							outputObject["meta"][fieldName]["type"] = "nonnum";
