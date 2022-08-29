@@ -1,0 +1,4 @@
+- Think of new standard naming
+- Don't call metadata UID in the cancerdata call
+- Use numerical rather than strings for ranges, use map for numerical ranges, make a function for it.
+- Set up PSql so we have a better tool for looking at the database

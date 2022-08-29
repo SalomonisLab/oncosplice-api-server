@@ -26,6 +26,7 @@ function convertToUnderscores(inputString){
 	return inputString;
 }
 
+
 module.exports.removeNewlinesAndUnderscores = removeNewlinesAndUnderscores;
 module.exports.changeSpecialCharsToBlank = changeSpecialCharsToBlank;
 module.exports.cleanUpTranslator = cleanUpTranslator;

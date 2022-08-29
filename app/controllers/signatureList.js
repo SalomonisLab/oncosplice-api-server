@@ -1,93 +1,61 @@
+const fs = require('fs');
 const { dbCredentials } = require("../config/oncodb.config.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
 
 async function signatureList(req, res, next){
 	if (req.method == 'POST') {
 		try{
+			const outputObject = {};
 			const postedData = req.body.data;
 			const cancerType = postedData.cancerType;
+			const selectedField = postedData.selectedField;
+			const prevFields = postedData.prevFields;
 			const queryHelperMap = databaseQueryHelper(cancerType);
-		//Code to implement	
-		/*
-		include 'config.php';
-		$conn = makePDO();
-		$cancertype = $_POST["CANCER"];
+			let singleBaseQuery = queryHelperMap["SIG"]["COUNT"].concat(" WHERE");
+			let singleFullBaseQuery = queryHelperMap["SIG"]["QUERY"].concat(" WHERE");
+			let singleBaseFlag = 0;
+			let metaBaseQuery = queryHelperMap["SIG"]["COUNT"].concat(" WHERE");
+			let metaBaseCount = 0;
 
-		$TABLE_DICT = array();
+			selectedField.key = selectedField.key.replace("+", "_",);
+			singleBaseQuery = singleBaseQuery.concat(" ").concat(selectedField.key).concat(" = '1'");
+			singleFullBaseQuery = singleFullBaseQuery.concat(" ").concat(selectedField.key).concat(" = '1'");
 
-		$TABLE_DICT[$cancertype]["META"]["COLUMNS"] = $cancertype . "/Columns";
-		$TABLE_DICT[$cancertype]["META"]["RANGE"] = $cancertype . "/Range";
-		$TABLE_DICT[$cancertype]["SIG"]["QUERY"] = "SELECT * FROM " . $cancertype . "_TCGA_SIGNATURE";
-		$TABLE_DICT[$cancertype]["SIG"]["COLUMNS"] = $cancertype . "/oncofields.txt";
-		$TABLE_DICT[$cancertype]["SPLC"]["QUERY"] = "SELECT * FROM " . $cancertype . "_TCGA_SPLICE";
-		$TABLE_DICT[$cancertype]["SPLC"]["ROWNUM"] = 999;
-		$TABLE_DICT[$cancertype]["SPLC"]["COLNUM"] = 999;
-		$TABLE_DICT[$cancertype]["SPLC"]["EXT"] = "";
-
-		$single_base_query = $TABLE_DICT[$cancertype]["SIG"]["QUERY"] . " WHERE";
-		$meta_base_query = $TABLE_DICT[$cancertype]["SIG"]["QUERY"] . " WHERE";
-		$meta_base_count = 0;
-		foreach ($_POST as $key => $value) {
-			if($key != "CANCER")
-			{
-				if("SEL" == substr($key, 0, 3))
-				{
-					$key = substr($key, 3);
-					$key = str_replace("+", "_", $key);
-					$single_base_query = $single_base_query." ".$key." = '1'";
-				}
-				else
-				{
-					if($meta_base_count != 0)
+			prevFields.forEach(field => {
+					if(metaBaseCount != 0)
 					{
-						$key = str_replace("+", "_", $key);
-				    	$meta_base_query = $meta_base_query." OR ".$key." = '1'";
+						field.key = field.key.replace("+", "_");
+				    	metaBaseQuery = metaBaseQuery.concat(" OR ").concat(field.key).concat(" = '1'");
 					}
 					else
 					{
-						$key = str_replace("+", "_", $key);
-						$meta_base_query = $meta_base_query." ".$key." = '1'";
+						field.key = field.key.replace("+", "_");
+						metaBaseQuery = metaBaseQuery.concat(" ").concat(field.key).concat(" = '1'");
 					}
-				    $meta_base_count = $meta_base_count + 1;
-				}
-			}
-		}
-		$metaresult = $conn->query($meta_base_query);
+				    metaBaseCount = metaBaseCount + 1;				
+			})
+			let metaResult = await dbCredentials.query(metaBaseQuery);
+			metaNumRows = metaResult.rows[0]["count"];
 
-		$metanumrows = $metaresult->rowCount();
-		if($metanumrows != 0 && $metanumrows != undefined)
-		{
-			$metanumrows = $metanumrows - 1;
-		}
+			let singleResult = await dbCredentials.query(singleBaseQuery);
+			singleNumRows = singleResult.rows[0]["count"];
 
-		$singleresult = $conn->query($single_base_query);
-		if (!$singleresult) {
-		    echo "An error occurred2.\n";
-		    exit;
-		}
+			let singleFullResult = await dbCredentials.query(singleFullBaseQuery);
 
-		$singlearray = array();
-		$singlecount = 0;
-		while ($row = $singleresult->fetch(PDO::FETCH_ASSOC)) {
-			$singlearray[$singlecount] = $row["uid"];
-			$singlecount = $singlecount + 1;
-		}
+			let singleArray = [];
+			let singleCount = 0;
 
-		$singlenumrows = $singleresult->rowCount();
-		if($singlenumrows != 0 && $singlenumrows != undefined)
-		{
-			$singlenumrows = $singlenumrows - 1;
-		}
-		$tumrows = array();
+			singleFullResult.rows.forEach(row => {
+				singleArray[singleCount] = row["uid"];
+				singleCount += 1;
+			})
+			outputObject["single"] = singleNumRows;
+			outputObject["singlequery"] = singleBaseQuery;
+			outputObject["meta"] = metaNumRows;
+			outputObject["metaquery"] = metaBaseQuery;
+			outputObject["result"] = singleArray;
+			res.send(outputObject);		
 
-		$tumrows["single"] = $singlenumrows;
-		$tumrows["singlequery"] = $single_base_query;
-		$tumrows["meta"] = $metanumrows;
-		$tumrows["metaquery"] = $meta_base_query;
-		$tumrows["result"] = $singlearray;
-
-		echo json_encode($tumrows);
-		*/
 		}
 		catch(error){
 			res.send(error);
