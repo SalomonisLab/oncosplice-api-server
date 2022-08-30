@@ -56,7 +56,7 @@ function setUpHeatmapQuery(postedData)
             let coord1PosSplit = coord1ChrmSplit[1].split("-");
             let coord1Start = coord1PosSplit[0];
             let coord1End = coord1PosSplit[1];
-            let preCoordQuery = " ((chromosome = '".concat(coord1Chrm).concat("' AND ((coord1 = '").concat(coord1Start).concat("' OR coord2 = '").concat(coord1Start).concat("' OR coord3 = '").concat(coord1Start).concat("' OR coord4 = '").concat(coord1Start).concat("' OR (coord1 = '").concat(coord1End).concat("' OR coord2 = '").concat(coord1End).concat("' OR coord3 = '").concat(coord1End).concat("' OR coord4 = '").concat(coord1End).concat("')))");
+            let preCoordQuery = " ((chromosome = '".concat(coord1Chrm).concat("') AND ((coord1 = '").concat(coord1Start).concat("' OR coord2 = '").concat(coord1Start).concat("' OR coord3 = '").concat(coord1Start).concat("' OR coord4 = '").concat(coord1Start).concat("') OR (coord1 = '").concat(coord1End).concat("' OR coord2 = '").concat(coord1End).concat("' OR coord3 = '").concat(coord1End).concat("' OR coord4 = '").concat(coord1End).concat("')))");
 			if(heatmapQueries.coordQuery == undefined)
 			{
 				heatmapQueries.coordQuery = " WHERE ".concat(preCoordQuery);
@@ -79,6 +79,7 @@ function setUpHeatmapQuery(postedData)
 				heatmapQueries.geneQuery = heatmapQueries.geneQuery.concat(" OR symbol = '").concat(geneSymbol).concat("'");
 			}		
 		})
+		heatmapQueries.geneQuery = heatmapQueries.geneQuery.concat(")");
 	}
 	if(signatures != undefined)
 	{
@@ -97,28 +98,28 @@ function setUpHeatmapQuery(postedData)
 	if(metadata != undefined)
 	{
 		//Determine if it is numerical or string
-		metadata.forEach(filter => {
-			if(filter.value.indexOf("-") != -1)
+		for (const [key, value] of Object.entries(metadata)) {
+			if(value.indexOf("-") != -1)
 			{
-				let numbersToSearch = filter.value.split("-");
+				let numbersToSearch = value.split("-");
 				if(heatmapQueries.metadataQuery != undefined){
-					heatmapQueries.metadataQuery = " AND ".concat(filter.key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
+					heatmapQueries.metadataQuery = " AND ".concat(key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
 				}
 				else{
-					heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(filter.key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
+					heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
 				}
-				heatmapQueries.metadataQuery = " AND ".concat(filter.key).concat(" <= '").concat(numbersToSearch[1]).concat("'");				
+				heatmapQueries.metadataQuery = " AND ".concat(key).concat(" <= '").concat(numbersToSearch[1]).concat("'");				
 			}
 			else
 			{
 				if(heatmapQueries.metadataQuery != undefined){
-                	heatmapQueries.metadataQuery = " AND ".concat(filter.key).concat(" = '").concat(filter.value).concat("'");
+                	heatmapQueries.metadataQuery = " AND ".concat(key).concat(" = '").concat(value).concat("'");
                 }
                 else{
-                    heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(filter.key).concat(" = '").concat(filter.value).concat("'");
+                    heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(key).concat(" = '").concat(value).concat("'");
                 }
 			}
-		})
+		}
 	}
 	if(oncospliceClusters != undefined)
 	{

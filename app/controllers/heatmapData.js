@@ -16,30 +16,33 @@ async function heatmapData(req, res, next){
 			var rpsiIndex = "NA";
 			var rpsiCount = 0;
     		var oncoSpliceClusterContents = fs.readFileSync("./MergedResult.txt", 'utf-8');
+    		console.log("RPSI", heatmapQueries.oncospliceClusterQuery);
     		oncoSpliceClusterContents.split(/\r?\n/).forEach(line =>  {
     			if(rpsiCount == 0)
     			{
     				var rpsiHeader = line;
     				rpsiHeader = rpsiHeader.split("\t");
-    				rpsiHeader.forEach(i =>	{
-						currentRH = rpsiHeader[i];
+    				for(let i = 0; i < rpsiHeader.length; i++)
+    				{
+    					currentRH = rpsiHeader[i];
 						if(currentRH == heatmapQueries.oncospliceClusterQuery.key)
 						{
 							rpsiIndex = i;
-							//break;
-						}
-    				})
+							break;
+						}    					
+    				}
     				if(rpsiIndex == "NA"){
     					var newKey = heatmapQueries.oncospliceClusterQuery.key.replace("_", " ");
-	    				rpsiHeader.forEach(i =>	{
-							currentRH = rpsiHeader[i];
+	    				for(let i = 0; i < rpsiHeader.length; i++)
+	    				{
+	    					currentRH = rpsiHeader[i];
 							if(currentRH == newKey)
 							{
 								rpsiIndex = i;
-								//break;
+								break;
 							}
-	    				})    					
-    				} 
+	    				}
+    				}
     				rpsiCount += 1;			
     			}
     			else
@@ -81,7 +84,6 @@ async function heatmapData(req, res, next){
 						UIDsubMakeQuery = UIDsubMakeQuery.concat("pancanceruid = ").concat("'").concat(pgArr[i]).concat("')");
 					}
 				}
-				outputObject["exm1"] = UIDsubMakeQuery;
 			}
 			//Set up metaresult
 			var mArr = [];
@@ -97,7 +99,7 @@ async function heatmapData(req, res, next){
 				})
 			}
 
-			var makeQuery = "SELECT symbol, description, examined_Junction, background_major_junction, altexons, proteinpredictions, dpsi, clusterid, uid, coordinates, eventannotation, ";
+			var makeQuery = "SELECT symbol, description, examined_Junction, background_major_junction, altexons, proteinpredictions, dpsi, clusterid, uid, chromosome, coord1, coord2, coord3, coord4, eventannotation, ";
 			if(mArr.length > 0)
 			{
 				for(let i = 0; i < mArr.length; i++)
@@ -120,6 +122,7 @@ async function heatmapData(req, res, next){
 					}
 					else
 					{
+
 						if(heatmapQueries.metadataQuery == undefined)
 						{
 							makeQuery = "SELECT * FROM ".concat(heatmapQueries.cancerTableName).concat("_SPLICE ");
@@ -129,7 +132,7 @@ async function heatmapData(req, res, next){
 							let secondToLast = makeQuery.slice(-1);
 							if(secondToLast == " ")
 							{
-								makeQuery.slice(0, -2);
+								makeQuery = makeQuery.slice(0, -2);
 							}
 							makeQuery = makeQuery.concat(" FROM ").concat(heatmapQueries.cancerTableName).concat("_SPLICE ");
 						}
@@ -159,7 +162,7 @@ async function heatmapData(req, res, next){
 					let secondToLast = makeQuery.slice(-1);
 					if(secondToLast == " ")
 					{
-						makeQuery.slice(0, -2);
+						makeQuery = makeQuery.slice(0, -2);
 					}
 					makeQuery = makeQuery.concat(" FROM ").concat(heatmapQueries.cancerTableName).concat("_SPLICE ");
 				}
@@ -223,7 +226,6 @@ async function heatmapData(req, res, next){
 
 			//Get data
 			var ic = 0;
-			console.log(result.rows.length);
 			result.rows.forEach(row => {
 			  returned_result[row["uid"]] = row;
 			  resultboxfile.write(row["uid"]);
@@ -320,13 +322,16 @@ async function heatmapData(req, res, next){
 						i = i + 1;
 					}
 				    fileLineCount = fileLineCount + 1;
-				    //console.log("EXCELLENTPANTS", fileLineCount);
 				});
 
 				rl.on('close', function(){
-					//console.log("SUPERPANTS");
 				    rl.close();
-					outputObject["data"] = outarr;
+					outputObject["cancer"] = req.body.data.cancerName;
+					outputObject["oncokey"] = heatmapQueries.oncospliceClusterQuery.key;
+					outputObject["rpsi"] = rpsiDict;
+					outputObject["rr"] = outarr;
+					outputObject["cci"] = columnClusterIndex;
+					outputObject["col_beds"] = columnNamesInitial;
 					res.send(outputObject);
 				});
 			});
