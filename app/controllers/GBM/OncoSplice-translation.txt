@@ -1,0 +1,14 @@
+Clusters	PSI-Event-Signatures	Simple-Name
+R1-V2	PSI.TCGA-GBM.R1-V2_vs_Others.txt	R1-V2 (WT-IDH1)
+R2-V16	PSI.TCGA-GBM.R2-V16_vs_Others.txt	R2-V16 (Proneural_Splicing Enriched)
+R2-V2	PSI.TCGA-GBM.R2-V2_vs_Others.txt	R2-V2 (Mesenchymal)
+R2-V22	PSI.TCGA-GBM.R2-V22_vs_Others.txt	R2-V22 (Neural_Splicing Enriched)
+R2-V27	PSI.TCGA-GBM.R2-V27_vs_Others.txt	R2-V27 (Un-IDH1)
+R2-V29	PSI.TCGA-GBM.R2-V29_vs_Others.txt	R2-V29 (Good Survival)
+R2-V3	PSI.TCGA-GBM.R2-V3_vs_Others.txt	R2-V3 (Proneural)
+R2-V4	PSI.TCGA-GBM.R2-V4_vs_Others.txt	R2-V4 (G-CIMP)
+R2-V6	PSI.TCGA-GBM.R2-V6_vs_Others.txt	R2-V6 (Splicing Enriched)
+R2-V8	PSI.TCGA-GBM.R2-V8_vs_Others.txt	R2-V8 (Splicing Enriched)
+R1-V1	PSI.TCGA-GBM.R1-V1_vs_Others.txt	R1-V1
+R2-V5	PSI.TCGA-GBM.R2-V5_vs_Others.txt	R2-V5
+R3-V1	PSI.TCGA-GBM.R3-V1_vs_Others.txt	R3-V1
