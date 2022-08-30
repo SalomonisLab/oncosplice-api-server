@@ -8,14 +8,14 @@ async function heatmapData(req, res, next){
 	if (req.method == 'POST') {
 		try{
 			var outputObject = {};
-			var oncoSpliceClusterPath = req.body.data.cancerName.concat("/MergedResult.txt");
+			var oncoSpliceClusterPath = "oncoclusters/".concat(req.body.data.cancerName).concat("_MergedResult.txt");
 			var heatmapQueries = setUpHeatmapQuery(req.body.data);
 
 			//Oncosplice Clustering map signature to oncosplice cluster
 			var rpsiDict = {};
 			var rpsiIndex = "NA";
 			var rpsiCount = 0;
-    		var oncoSpliceClusterContents = fs.readFileSync("./MergedResult.txt", 'utf-8');
+    		var oncoSpliceClusterContents = fs.readFileSync(oncoSpliceClusterPath, 'utf-8');
     		console.log("RPSI", heatmapQueries.oncospliceClusterQuery);
     		oncoSpliceClusterContents.split(/\r?\n/).forEach(line =>  {
     			if(rpsiCount == 0)
