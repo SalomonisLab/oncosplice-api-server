@@ -15,49 +15,51 @@ async function heatmapData(req, res, next){
 			var rpsiDict = {};
 			var rpsiIndex = "NA";
 			var rpsiCount = 0;
-    		var oncoSpliceClusterContents = fs.readFileSync(oncoSpliceClusterPath, 'utf-8');
-    		console.log("RPSI", heatmapQueries.oncospliceClusterQuery);
-    		oncoSpliceClusterContents.split(/\r?\n/).forEach(line =>  {
-    			if(rpsiCount == 0)
-    			{
-    				var rpsiHeader = line;
-    				rpsiHeader = rpsiHeader.split("\t");
-    				for(let i = 0; i < rpsiHeader.length; i++)
-    				{
-    					currentRH = rpsiHeader[i];
-						if(currentRH == heatmapQueries.oncospliceClusterQuery.key)
-						{
-							rpsiIndex = i;
-							break;
-						}    					
-    				}
-    				if(rpsiIndex == "NA"){
-    					var newKey = heatmapQueries.oncospliceClusterQuery.key.replace("_", " ");
+			if(heatmapQueries.oncospliceClusterQuery.key != undefined)
+			{
+	    		var oncoSpliceClusterContents = fs.readFileSync(oncoSpliceClusterPath, 'utf-8');
+	    		oncoSpliceClusterContents.split(/\r?\n/).forEach(line =>  {
+	    			if(rpsiCount == 0)
+	    			{
+	    				var rpsiHeader = line;
+	    				rpsiHeader = rpsiHeader.split("\t");
 	    				for(let i = 0; i < rpsiHeader.length; i++)
 	    				{
 	    					currentRH = rpsiHeader[i];
-							if(currentRH == newKey)
+							if(currentRH == heatmapQueries.oncospliceClusterQuery.key)
 							{
 								rpsiIndex = i;
 								break;
-							}
+							}    					
 	    				}
-    				}
-    				rpsiCount += 1;			
-    			}
-    			else
-    			{
-					if(rpsiIndex != "NA")
-					{
-						var rpsiLine = line.split("\t");
-						var rowLabel = rpsiLine[0];
-						rowLabel = rowLabel.replace(".", "_");
-						rowLabel = rowLabel.replace("-", "_");
-						rowLabel = rowLabel.toLowerCase();
-						rpsiDict[rowLabel] = rpsiLine[rpsiIndex];
-					}
-    			}
-			})
+	    				if(rpsiIndex == "NA"){
+	    					var newKey = heatmapQueries.oncospliceClusterQuery.key.replace("_", " ");
+		    				for(let i = 0; i < rpsiHeader.length; i++)
+		    				{
+		    					currentRH = rpsiHeader[i];
+								if(currentRH == newKey)
+								{
+									rpsiIndex = i;
+									break;
+								}
+		    				}
+	    				}
+	    				rpsiCount += 1;			
+	    			}
+	    			else
+	    			{
+						if(rpsiIndex != "NA")
+						{
+							var rpsiLine = line.split("\t");
+							var rowLabel = rpsiLine[0];
+							rowLabel = rowLabel.replace(".", "_");
+							rowLabel = rowLabel.replace("-", "_");
+							rowLabel = rowLabel.toLowerCase();
+							rpsiDict[rowLabel] = rpsiLine[rpsiIndex];
+						}
+	    			}
+				})
+    		}
 
 			if(heatmapQueries.signatureQuery != undefined)
 			{
