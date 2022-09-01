@@ -7,6 +7,7 @@ async function getExonViewerData(req, res, next){
 			var outputObject = {};
 			var postedData = req.body.data;
 
+			//Remove select *, only select needed columns
 			var exonQuery = "SELECT * FROM HS_EXON WHERE gene = '".concat(postedData.gene).concat("';");
 			var exonResult = await dbCredentials.query(exonQuery);
 
@@ -66,7 +67,7 @@ async function getExonViewerData(req, res, next){
 			});
 
 			outputObject["gene"] = m_arr;
-			outputObject["trans"] = t_arr;
+			outputObject["transcript"] = t_arr;
 			outputObject["junc"] = j_arr;
 			outputObject["blob"] = blob_arr;
 
