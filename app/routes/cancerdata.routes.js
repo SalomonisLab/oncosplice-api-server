@@ -1,14 +1,14 @@
-const { cancerData } = require("../controllers/cancerData");
-const { selectedMetaDataUiFields } = require("../controllers/selectedMetaDataUiFields");
-const { signatureList } = require("../controllers/signatureList");
+const { getUI } = require("../controllers/getUI");
+const { getSelectedSamples } = require("../controllers/getSelectedSamples");
+const { getSignatureData } = require("../controllers/getSignatureData");
 const { matchCoordinatesPreSubmission } = require("../controllers/matchCoordinatesPreSubmission");
 const { matchGenesPreSubmission } = require("../controllers/matchGenesPreSubmission");
-const { newSignature } = require("../controllers/newSignature");
+//const { newSignature } = require("../controllers/newSignature");
 const { heatmapData } = require("../controllers/heatmapData");
-const { singleUID } = require("../controllers/singleUID");
-const { gtex } = require("../controllers/gtex");
+const { getSingleUID } = require("../controllers/singleUID");
+const { getGtexData } = require("../controllers/gtex");
 const { cbioportalCurlCommand } = require("../controllers/cbioportalCurlCommand");
-const { exon } = require("../controllers/exon");
+const { getExonViewerData } = require("../controllers/exon");
 
 module.exports = app => {
     //const datasets = require("../controllers/cancerdata.controller.js");
@@ -18,17 +18,16 @@ module.exports = app => {
     // Retrieve all Datasets
     //router.get("/", datasets.testQuery);
 
-    router.post("/cancerdata", cancerData);
-    router.post("/getmetadata", selectedMetaDataUiFields);
-    router.post("/getsignatures", signatureList);
+    router.post("/getui", getUI);
+    router.post("/getsamples", getSelectedSamples);
+    router.post("/getsignaturedata", getSignatureData);
     router.post("/getcoords", matchCoordinatesPreSubmission);
     router.post("/getgenes", matchGenesPreSubmission);
-    router.post("/newsignature", newSignature);
-    router.post("/getHeatmapData",heatmapData);
-    router.post("/getSingleUID", singleUID);
-    router.post("/getGTEX", gtex);
-    router.post("/getCBIO", cbioportalCurlCommand);
-    router.post("/getExon", exon);
+    router.post("/getheatmapdata",heatmapData);
+    router.post("/getsingleuid", getSingleUID);
+    router.post("/getgtex", getGtexData);
+    router.post("/getcbio", cbioportalCurlCommand);
+    router.post("/getexonviewerdata", getExonViewerData);
     app.use('/api/datasets', router);
 
 };

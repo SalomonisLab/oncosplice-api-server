@@ -3,7 +3,7 @@ const { dbCredentials } = require("../config/oncodb.config.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
 
 //This function records the number of samples that exist for a given selection.
-async function selectedMetaDataUiFields(req, res, next){
+async function getSelectedSamples(req, res, next){
 	if (req.method == 'POST') {
 		try{
 			const outputObject = {};
@@ -80,4 +80,4 @@ async function selectedMetaDataUiFields(req, res, next){
 	}
 }
 
-module.exports.selectedMetaDataUiFields = selectedMetaDataUiFields;
+module.exports.getSelectedSamples = getSelectedSamples;

@@ -1,7 +1,7 @@
 const { dbCredentials } = require("../config/oncodb.config.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
 
-async function gtex(req, res, next){
+async function getGtexData(req, res, next){
 	if (req.method == 'POST') {
 		try{
 			var outputObject = {};
@@ -30,4 +30,4 @@ async function gtex(req, res, next){
 
 }
 
-module.exports.gtex = gtex;
+module.exports.getGtexData = getGtexData;

@@ -6,7 +6,7 @@ const { containsObject } = require("../utilities/generalFunctions.js")
 
 //This code retrieves the properties of a cancer study. The signatures, clinical metadata, and dataset metrics
 //(number of rows and columns) This is used for populating the UI on the front end.
-async function cancerData(req, res, next){
+async function getUI(req, res, next){
 	if (req.method == 'POST') {
 		try{
 		const outputObject = {};
@@ -111,4 +111,4 @@ async function cancerData(req, res, next){
 	}
 }
 
-module.exports.cancerData = cancerData;
+module.exports.getUI = getUI;

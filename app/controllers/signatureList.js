@@ -2,7 +2,7 @@ const fs = require('fs');
 const { dbCredentials } = require("../config/oncodb.config.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
 
-async function signatureList(req, res, next){
+async function getSignatureData(req, res, next){
 	if (req.method == 'POST') {
 		try{
 			const outputObject = {};
@@ -64,4 +64,4 @@ async function signatureList(req, res, next){
 	}
 }
 
-module.exports.signatureList = signatureList;
+module.exports.getSignatureData = getSignatureData;
