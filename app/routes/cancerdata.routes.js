@@ -5,7 +5,7 @@ const { matchCoordinatesPreSubmission } = require("../controllers/matchCoordinat
 const { matchGenesPreSubmission } = require("../controllers/matchGenesPreSubmission");
 //const { newSignature } = require("../controllers/newSignature");
 const { heatmapData } = require("../controllers/heatmapData");
-const { getSingleUID } = require("../controllers/getSingleUID");
+const { getSingleUidData } = require("../controllers/getSingleUidData");
 const { getGtexData } = require("../controllers/getGtexData");
 const { cbioportalCurlCommand } = require("../controllers/cbioportalCurlCommand");
 const { getExonViewerData } = require("../controllers/getExonViewerData");
@@ -24,7 +24,7 @@ module.exports = app => {
     router.post("/getcoords", matchCoordinatesPreSubmission);
     router.post("/getgenes", matchGenesPreSubmission);
     router.post("/getheatmapdata",heatmapData);
-    router.post("/getsingleuid", getSingleUID);
+    router.post("/getsingleuid", getSingleUidData);
     router.post("/getgtex", getGtexData);
     router.post("/getcbio", cbioportalCurlCommand);
     router.post("/getexonviewerdata", getExonViewerData);

@@ -9,17 +9,10 @@ async function getGtexData(req, res, next){
 			var gtexQuery = "SELECT * FROM gtex WHERE uid = '".concat(postUID).concat("'");
 			var gtexResult = await dbCredentials.query(gtexQuery);
 
-			var mArrCount = 0;
-			var mArr = [];
-
-			gtexResult.rows.forEach(row => {
-				mArr[mArrCount] = row;
-				mArrCount += 1;
-			})
-
-			outputObject["postuid"] = postUID;
-			outputObject["splicequery"] = gtexQuery;
-			outputObject["result"] = mArr;
+			//For DEBUG only
+			//outputObject["postuid"] = postUID;
+			//outputObject["splicequery"] = gtexQuery;
+			outputObject["result"] = gtexResult.rows;
 			res.send(outputObject);
 		}
 		catch(error){

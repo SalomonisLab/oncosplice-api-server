@@ -1,7 +1,7 @@
 const { dbCredentials } = require("../config/oncodb.config.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
 
-async function getSingleUID(req, res, next){
+async function getSingleUidData(req, res, next){
 	if (req.method == 'POST') {
 		try{
 			var outputObject = {};
@@ -23,4 +23,4 @@ async function getSingleUID(req, res, next){
 	}
 }
 
-module.exports.getSingleUID = getSingleUID;
+module.exports.getSingleUidData = getSingleUidData;
