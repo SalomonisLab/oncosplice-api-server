@@ -5,10 +5,10 @@ const { matchCoordinatesPreSubmission } = require("../controllers/matchCoordinat
 const { matchGenesPreSubmission } = require("../controllers/matchGenesPreSubmission");
 //const { newSignature } = require("../controllers/newSignature");
 const { heatmapData } = require("../controllers/heatmapData");
-const { getSingleUID } = require("../controllers/singleUID");
-const { getGtexData } = require("../controllers/gtex");
+const { getSingleUID } = require("../controllers/getSingleUID");
+const { getGtexData } = require("../controllers/getGtexData");
 const { cbioportalCurlCommand } = require("../controllers/cbioportalCurlCommand");
-const { getExonViewerData } = require("../controllers/exon");
+const { getExonViewerData } = require("../controllers/getExonViewerData");
 
 module.exports = app => {
     //const datasets = require("../controllers/cancerdata.controller.js");
