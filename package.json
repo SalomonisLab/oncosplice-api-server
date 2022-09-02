@@ -23,6 +23,7 @@
     "node-libcurl": "^2.3.4",
     "node-postgres": "^0.6.2",
     "pg": "^8.7.3",
-    "querystring": "^0.2.1"
+    "querystring": "^0.2.1",
+    "uuid": "^8.3.2"
   }
 }

@@ -8,7 +8,7 @@ async function getExonViewerData(req, res, next){
 			var postedData = req.body.data;
 
 			//Remove select *, only select needed columns
-			var exonQuery = "SELECT * FROM HS_EXON WHERE gene = '".concat(postedData.gene).concat("';");
+			var exonQuery = "SELECT exon_id, exon_region_start_s_, exon_region_stop_s_, splice_junctions, ens_exon_ids FROM HS_EXON WHERE gene = '".concat(postedData.gene).concat("';");
 			var exonResult = await dbCredentials.query(exonQuery);
 
 			var blob_arr_gm_count = 0;
@@ -34,7 +34,7 @@ async function getExonViewerData(req, res, next){
 			    blob_arr_gm_count = blob_arr_gm_count + 1;
 			});
 
-			var transcriptQuery = "SELECT * FROM HS_TRANSCRIPT_ANNOT WHERE ensembl_gene_id = '".concat(postedData.gene).concat("';");
+			var transcriptQuery = "SELECT ensembl_transcript_id, exon_start__bp_ FROM HS_TRANSCRIPT_ANNOT WHERE ensembl_gene_id = '".concat(postedData.gene).concat("';");
 			var transResult = await dbCredentials.query(transcriptQuery);
 
 			var t_arr_count = 0;
@@ -48,7 +48,7 @@ async function getExonViewerData(req, res, next){
 			    blob_arr_tr_count = blob_arr_tr_count + 1;				
 			});
 
-			var juncQuery = "SELECT * FROM HS_JUNC WHERE gene = '".concat(postedData.gene).concat("';");
+			var juncQuery = "SELECT exon_id, ens_exon_ids, exon_region_start_s_, exon_region_stop_s_, strand FROM HS_JUNC WHERE gene = '".concat(postedData.gene).concat("';");
 			var juncResult = await dbCredentials.query(juncQuery);
 
 			var j_arr_count = 0;
