@@ -11,7 +11,7 @@ async function cbioportalCurlCommand(req, res, next){
 		//curlTest.setOpt(Curl.option.RETURNTRANSFER, true);
 		curlRequest.setOpt(Curl.option.HTTPHEADER, ["authority: www.cbioportal.org","content-type: application/json"]);
 
-		var data = JSON.stringify(req.body.data);
+		var data = JSON.stringify(req.body);
 		curlRequest.setOpt(Curl.option.POSTFIELDS, data);
 		curlRequest.setOpt(Curl.option.SSL_VERIFYHOST, false);
 		curlRequest.setOpt(Curl.option.SSL_VERIFYPEER, false);

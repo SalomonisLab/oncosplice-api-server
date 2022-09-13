@@ -7,30 +7,30 @@ async function getSignatureData(req, res, next){
 		try{
 			const outputObject = {};
 			const postedData = req.body.data;
-			const cancerType = postedData.cancerType;
-			const selectedField = postedData.selectedField;
-			const prevFields = postedData.prevFields;
-			const queryHelperMap = databaseQueryHelper(cancerType);
+			var cancerType = postedData.cancer;
+			var selectedField = postedData.selectedField;
+			var prevFields = postedData.prevFields;
+			var queryHelperMap = databaseQueryHelper(cancerType);
 			let singleBaseQuery = queryHelperMap["SIG"]["COUNT"].concat(" WHERE");
 			let singleFullBaseQuery = queryHelperMap["SIG"]["QUERY"].concat(" WHERE");
 			let singleBaseFlag = 0;
 			let metaBaseQuery = queryHelperMap["SIG"]["COUNT"].concat(" WHERE");
 			let metaBaseCount = 0;
 
-			selectedField.key = selectedField.key.replace("+", "_",);
-			singleBaseQuery = singleBaseQuery.concat(" ").concat(selectedField.key).concat(" = '1'");
-			singleFullBaseQuery = singleFullBaseQuery.concat(" ").concat(selectedField.key).concat(" = '1'");
+			selectedField = selectedField.replace("+", "_",);
+			singleBaseQuery = singleBaseQuery.concat(" ").concat(selectedField).concat(" = '1'");
+			singleFullBaseQuery = singleFullBaseQuery.concat(" ").concat(selectedField).concat(" = '1'");
 
 			prevFields.forEach(field => {
 					if(metaBaseCount != 0)
 					{
-						field.key = field.key.replace("+", "_");
-				    	metaBaseQuery = metaBaseQuery.concat(" OR ").concat(field.key).concat(" = '1'");
+						field = field.replace("+", "_");
+				    	metaBaseQuery = metaBaseQuery.concat(" OR ").concat(field).concat(" = '1'");
 					}
 					else
 					{
-						field.key = field.key.replace("+", "_");
-						metaBaseQuery = metaBaseQuery.concat(" ").concat(field.key).concat(" = '1'");
+						field = field.replace("+", "_");
+						metaBaseQuery = metaBaseQuery.concat(" ").concat(field).concat(" = '1'");
 					}
 				    metaBaseCount = metaBaseCount + 1;				
 			})

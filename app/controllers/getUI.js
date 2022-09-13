@@ -17,6 +17,7 @@ async function getUI(req, res, next){
 	    const clinicalMetadataResult = await dbCredentials.query("SELECT * ".concat(queryHelperMap["META"]["QUERY"]));
 	    const promises = clinicalMetadataResult.fields.map(async element => {
 	    	const fieldName = element.name;
+	    	if(fieldName != "uid"){
 	    	outputObject["meta"][fieldName] = {};
 	    	outputObject["meta"][fieldName]["values"] = [];
 	    	outputObject["meta"][fieldName]["type"] = "notset";
@@ -66,6 +67,7 @@ async function getUI(req, res, next){
 			}
 			outputObject["meta"][fieldName] = outputObject["meta"][fieldName]["values"];
 			return fieldEntries;
+			}
 	    })
 	    const sigTranslater = {};
 	    const sigNamesList = [];

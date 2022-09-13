@@ -110,7 +110,6 @@ async function clusterDataAndSend(res, queryResult, generatedUUID, outputObject)
 				if(line.length > 1)
 				{
 					clusteredHeatmapArray[i] = {};
-					returnedResult[line[0]] = {};
 					clusteredHeatmapArray[i]["uid"] = line[0];
 					clusteredHeatmapArray[i]["pancanceruid"] = line[0];
 					clusteredHeatmapArray[i]["symbol"] = returnedResult[line[0]]["symbol"];

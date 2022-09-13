@@ -12,7 +12,7 @@ async function getSingleUidData(req, res, next){
 			var uidResult = await dbCredentials.query(uidQuery);
 
 			//For debug only
-			//outputObject["splicequery"] = uidQuery;
+			outputObject["splicequery"] = uidQuery;
 			outputObject["result"] = uidResult.rows;
 			res.send(outputObject);
 		}

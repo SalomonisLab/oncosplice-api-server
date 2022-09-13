@@ -13,6 +13,7 @@ async function cancerData(req, res, next){
 	    const clinicalMetadataResult = await dbCredentials.query("SELECT * ".concat(queryHelperMap["META"]["QUERY"]));
 	    const promises = clinicalMetadataResult.fields.map(async element => {
 	    	const fieldName = element.name;
+	    	if(fieldName != "uid"){
 	    	outputObject["meta"][fieldName]["values"] = [];
 	    	outputObject["meta"][fieldName]["type"] = "notset";
 	    	outputObject["meta"][fieldName]["usableUniqueValues"] = [];
@@ -54,6 +55,7 @@ async function cancerData(req, res, next){
 				outputObject["range"][fieldName] = [metaMin.toString().concat("-").concat(boundary1), boundary1.toString().concat("-").concat(boundary2), boundary2.concat("-").concat(metaMax.toString())];
 			}
 			return fieldEntries;
+			}
 	    })
 		
 	    const sigTranslater = {};

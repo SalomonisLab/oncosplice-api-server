@@ -54,7 +54,8 @@ async function heatmapData(req, res, next){
 	    			{
 						if(oncospliceClustersIndex != "NA")
 						{
-							var oncospliceClustersFileLine = line.split("\t")[0].replace(/\.|\-/g, "_").toLowerCase();;
+							let oncospliceClustersFileLine = line.split("\t");
+							let rowLabel = oncospliceClustersFileLine[0].replace(/\.|\-/g, "_").toLowerCase();
 							oncospliceClustersDict[rowLabel] = oncospliceClustersFileLine[oncospliceClustersIndex];
 						}
 	    			}
@@ -69,6 +70,7 @@ async function heatmapData(req, res, next){
 				var pgArr = [];
 				var count = 0;
 
+				console.log("signaturequery", heatmapQueries.signatureQuery);
 				var signatureDataResult = await dbCredentials.query(heatmapQueries.signatureQuery);
 				signatureDataResult.rows.forEach(row => {
 					pgArr[count] = row["uid"];

@@ -29,6 +29,14 @@ function databaseQueryHelper(cancerName)
 function setUpHeatmapQuery(postedData)
 {
 	let cancerTableName = postedData.cancerName == "AML_Leucegene" ? postedData.cancerName : postedData.cancerName.concat("_TCGA");
+	if(postedData.comparedCancer != undefined)
+	{
+		var comparedCancerName = postedData.comparedCancer == "AML_Leucegene" ? postedData.comparedCancer : postedData.comparedCancer.concat("_TCGA");
+	}
+	else
+	{
+		var comparedCancerName = undefined;
+	}
 	let coords = postedData.coords;
 	let genes = postedData.genes;
 	let signatures = postedData.signatures;
@@ -37,6 +45,7 @@ function setUpHeatmapQuery(postedData)
 
 	var heatmapQueries = {
 		"cancerTableName": cancerTableName,
+		"comparedCancer": comparedCancerName,
 		"coordQuery" : undefined,
 		"geneQuery" : undefined,
 		"signatureQuery" : undefined,
@@ -47,7 +56,7 @@ function setUpHeatmapQuery(postedData)
 		}
 	}
 
-	if(coords != undefined)
+	if(coords.length > 0)
 	{
 		coords.forEach(coordSet => {
 			coordSet = coordSet.replace(/\r|\n/g, "");
@@ -67,7 +76,7 @@ function setUpHeatmapQuery(postedData)
 			}
 		})
 	}
-	if(genes != undefined)
+	if(genes.length > 0)
 	{
 		genes.forEach(geneSymbol => {
 			if(heatmapQueries.geneQuery == undefined)
@@ -81,7 +90,7 @@ function setUpHeatmapQuery(postedData)
 		})
 		heatmapQueries.geneQuery = heatmapQueries.geneQuery.concat(")");
 	}
-	if(signatures != undefined)
+	if(signatures.length > 0)
 	{
 		signatures.forEach(signature => {
 			signature = signature.replace(/\)|\(|\+|\-/g, "_");
@@ -91,7 +100,7 @@ function setUpHeatmapQuery(postedData)
 			}
 			else
 			{
-				heatmapQueries.signatureQuery = " OR ".concat(heatmapQueries.signature).concat(" = '1'");
+				heatmapQueries.signatureQuery = heatmapQueries.signatureQuery.concat(" OR ").concat(heatmapQueries.signature).concat(" = '1'");
 			}				
 		})
 	}
