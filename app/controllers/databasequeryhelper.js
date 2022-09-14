@@ -107,28 +107,28 @@ function setUpHeatmapQuery(postedData)
 	if(metadata != undefined)
 	{
 		//Determine if it is numerical or string
-		for (const [key, value] of Object.entries(metadata)) {
-			if(value.indexOf("-") != -1)
+		metadata.forEach(object => {
+			if(object.value.indexOf("-") != -1)
 			{
-				let numbersToSearch = value.split("-");
+				let numbersToSearch = object.value.split("-");
 				if(heatmapQueries.metadataQuery != undefined){
-					heatmapQueries.metadataQuery = " AND ".concat(key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
+					heatmapQueries.metadataQuery = " AND ".concat(object.key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
 				}
 				else{
-					heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
+					heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(object.key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
 				}
-				heatmapQueries.metadataQuery = " AND ".concat(key).concat(" <= '").concat(numbersToSearch[1]).concat("'");				
+				heatmapQueries.metadataQuery = " AND ".concat(object.key).concat(" <= '").concat(numbersToSearch[1]).concat("'");
 			}
 			else
 			{
 				if(heatmapQueries.metadataQuery != undefined){
-                	heatmapQueries.metadataQuery = " AND ".concat(key).concat(" = '").concat(value).concat("'");
+                	heatmapQueries.metadataQuery = " AND ".concat(object.key).concat(" = '").concat(object.value).concat("'");
                 }
                 else{
-                    heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(key).concat(" = '").concat(value).concat("'");
+                    heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(object.key).concat(" = '").concat(object.value).concat("'");
                 }
 			}
-		}
+		});
 	}
 	if(oncospliceClusters != undefined)
 	{

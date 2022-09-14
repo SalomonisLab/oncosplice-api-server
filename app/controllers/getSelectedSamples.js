@@ -12,65 +12,57 @@ async function getSelectedSamples(req, res, next){
 			const selectedField = postedData.selectedField;
 			const prevFields = postedData.prevFields;
 			const queryHelperMap = databaseQueryHelper(cancerType);
-			var singleBaseQuery = "SELECT COUNT(*) ".concat(queryHelperMap["META"]["QUERY"]).concat(" WHERE");
-			var singleBaseFlag = 0;
-			var metaBaseQuery = "SELECT COUNT(*) ".concat(queryHelperMap["META"]["QUERY"]).concat(" WHERE");
-			var metaBaseCount = 0;
-			singleBaseFlag = 1;
+			var selectedSampleQuery = "SELECT COUNT(*) ".concat(queryHelperMap["META"]["QUERY"]).concat(" WHERE");
+			var cumulativeSampleQuery = "SELECT COUNT(*) ".concat(queryHelperMap["META"]["QUERY"]).concat(" WHERE");
+			var cumulativeSampleCount = 0;
 
 			//Check to see if the selected field has range or not.
 			if(selectedField.value.indexOf("-") != -1)
 			{
-				var numberstosearch = selectedField.value.split("-");
-				singleBaseQuery = singleBaseQuery.concat(" ").concat(selectedField.key).concat(" >= '").concat(numberstosearch[0]).concat("'");
-				singleBaseQuery = singleBaseQuery.concat(" AND ").concat(selectedField.key).concat(" <= '").concat(numberstosearch[1]).concat("'");
+				let numbersOfRange = selectedField.value.split("-");
+				selectedSampleQuery = selectedSampleQuery.concat(" ").concat(selectedField.key).concat(" >= '").concat(numbersOfRange[0]).concat("'");
+				selectedSampleQuery = selectedSampleQuery.concat(" AND ").concat(selectedField.key).concat(" <= '").concat(numbersOfRange[1]).concat("'");
 			}
 			else
 			{
-				singleBaseQuery = singleBaseQuery.concat(" ").concat(selectedField.key).concat(" = '").concat(selectedField.value).concat("'");
+				selectedSampleQuery = selectedSampleQuery.concat(" ").concat(selectedField.key).concat(" = '").concat(selectedField.value).concat("'");
 			}
 
-			console.log("singleBaseQuery", singleBaseQuery);
+			console.log("selectedSampleQuery", selectedSampleQuery);
 			
 			prevFields.forEach(field => {
 				//Check to see if the current field has range or not.
 				if(field.key.indexOf("-") != -1)
 				{
-					var numberstosearch = field.value.split("-");
-					let metaSuffixQuery = field.key.concat(" >= '").concat(numberstosearch[0]).concat("'");
-					metaBaseQuery = metaBaseCount != 0 ? metaBaseQuery.concat(" AND ") : metaBaseQuery.concat(" ");
-					metaBaseQuery = metaBaseQuery.concat(metaSuffixQuery);
-					metaBaseQuery = metaBaseQuery.concat(" AND ").concat(field.key).concat(" <= '").concat(numberstosearch[1]).concat("'");
-					metaBaseCount += 2;
+					let numbersOfRange = field.value.split("-");
+					let cumulativeQuerySuffix = field.key.concat(" >= '").concat(numbersOfRange[0]).concat("'");
+					cumulativeSampleQuery = cumulativeSampleCount != 0 ? cumulativeSampleQuery.concat(" AND ") : cumulativeSampleQuery.concat(" ");
+					cumulativeSampleQuery = cumulativeSampleQuery.concat(cumulativeQuerySuffix);
+					cumulativeSampleQuery = cumulativeSampleQuery.concat(" AND ").concat(field.key).concat(" <= '").concat(numbersOfRange[1]).concat("'");
+					cumulativeSampleCount += 2;
 				}
 				else
 				{
-					let metaSuffixQuery = field.key.concat(" = '").concat(field.value).concat("'");
-					metaBaseQuery = metaBaseCount != 0 ? metaBaseQuery.concat(" AND ") : metaBaseQuery.concat(" ");
-					metaBaseQuery = metaBaseQuery.concat(metaSuffixQuery);
-					metaBaseCount = metaBaseCount + 1;
+					let cumulativeQuerySuffix = field.key.concat(" = '").concat(field.value).concat("'");
+					cumulativeSampleQuery = cumulativeSampleCount != 0 ? cumulativeSampleQuery.concat(" AND ") : cumulativeSampleQuery.concat(" ");
+					cumulativeSampleQuery = cumulativeSampleQuery.concat(cumulativeQuerySuffix);
+					cumulativeSampleCount += 1;
 				}				
 			})
 
 			//First query for sample ids. Will need to be changed to be contructed in depth.
-	    	const prevMetadataResult = await dbCredentials.query(metaBaseQuery);
+	    	const cumulativeSampleResult = await dbCredentials.query(cumulativeSampleQuery);
 
-			var metaNumRows = prevMetadataResult.rows[0]["count"];
+			var cumulativeSampleRows = cumulativeSampleResult.rows[0]["count"];
 			var singleResult = 0;
 			var singleNumRows = 0;
-			if(singleBaseFlag != 0)
-			{
-				singleResult = await dbCredentials.query(singleBaseQuery);
-				singleNumRows = singleResult.rows[0]["count"];
-			}
-			else
-			{
-				singleNumRows = 0;
-			}
-			outputObject["single"] = singleNumRows;
-			outputObject["singlequery"] = singleBaseQuery;
-			outputObject["meta"] = metaNumRows;
-			outputObject["metaquery"] = metaBaseQuery;
+			selectedSampleResult = await dbCredentials.query(selectedSampleQuery);
+			selectedSampleNumRows = selectedSampleResult.rows[0]["count"];
+
+			outputObject["single"] = selectedSampleNumRows;
+			outputObject["singlequery"] = selectedSampleQuery;
+			outputObject["meta"] = cumulativeSampleRows;
+			outputObject["metaquery"] = cumulativeSampleQuery;
 			res.send(outputObject);
 		}
 		catch(error){
