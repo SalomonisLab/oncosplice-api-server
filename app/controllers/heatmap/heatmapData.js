@@ -70,7 +70,6 @@ async function heatmapData(req, res, next){
 				var returnedArrayOfUIDs = [];
 				var count = 0;
 
-				console.log("signaturequery", heatmapQueries.signatureQuery);
 				var signatureDataResult = await dbCredentials.query(heatmapQueries.signatureQuery);
 				signatureDataResult.rows.forEach(row => {
 					returnedArrayOfUIDs[count] = row["uid"];
@@ -94,14 +93,12 @@ async function heatmapData(req, res, next){
 
 			//First query for sample ids. Will need to be changed to be contructed in depth.
 			//Change to sample data. NOT metadata.
-			console.log("metaDataQuery", heatmapQueries.metadataQuery);
 			if(heatmapQueries.metadataQuery != undefined)
 			{
 				var metaDataResult = await dbCredentials.query(heatmapQueries.metadataQuery);
 				metaDataResult.rows.forEach(row => {
 				  sampleResultArr[sampleResultArr.length] = row["uid"];
 				})
-				console.log("sampleResultArr", sampleResultArr);
 			}
 
 			//makeQuery is a dumb name, call it "splicing data query" or something like that.

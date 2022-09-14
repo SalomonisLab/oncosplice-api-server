@@ -12,7 +12,6 @@ async function getUI(req, res, next){
 		const outputObject = {};
 		outputObject["meta"] = {};
 		outputObject["range"] = {};
-		console.log("reqbody", req.body);
 	    const queryHelperMap = databaseQueryHelper(req.body.data);
 	    const clinicalMetadataResult = await dbCredentials.query("SELECT * ".concat(queryHelperMap["META"]["QUERY"]));
 	    const promises = clinicalMetadataResult.fields.map(async element => {
