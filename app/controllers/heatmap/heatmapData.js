@@ -66,14 +66,14 @@ async function heatmapData(req, res, next){
     		//We already have UIDs! We don't need to fetch them again.
 			if(heatmapQueries.signatureQuery != undefined)
 			{
-				var UIDsubMakeQuery = " WHERE (";
-				var pgArr = [];
+				var signatureUIDSforHeatmapQuery = " WHERE (";
+				var returnedArrayOfUIDs = [];
 				var count = 0;
 
 				console.log("signaturequery", heatmapQueries.signatureQuery);
 				var signatureDataResult = await dbCredentials.query(heatmapQueries.signatureQuery);
 				signatureDataResult.rows.forEach(row => {
-					pgArr[count] = row["uid"];
+					returnedArrayOfUIDs[count] = row["uid"];
 					count += 1;
 				})
 
@@ -81,11 +81,11 @@ async function heatmapData(req, res, next){
 				{
 					if(i != (count - 1))
 					{
-						UIDsubMakeQuery = UIDsubMakeQuery.concat("pancanceruid = ").concat("'").concat(pgArr[i]).concat("' OR ");
+						signatureUIDSforHeatmapQuery = signatureUIDSforHeatmapQuery.concat("pancanceruid = ").concat("'").concat(returnedArrayOfUIDs[i]).concat("' OR ");
 					}
 					else
 					{
-						UIDsubMakeQuery = UIDsubMakeQuery.concat("pancanceruid = ").concat("'").concat(pgArr[i]).concat("')");
+						signatureUIDSforHeatmapQuery = signatureUIDSforHeatmapQuery.concat("pancanceruid = ").concat("'").concat(returnedArrayOfUIDs[i]).concat("')");
 					}
 				}
 			}
@@ -111,17 +111,16 @@ async function heatmapData(req, res, next){
 				for(let i = 0; i < sampleResultArr.length; i++)
 				{
 					//Strings have to be edited in order to be matched
-					var strEdit = sampleResultArr[i].replace(/\.|\-/g, "_");
-					strEdit = strEdit.toLowerCase();
+					var parsedSample = (sampleResultArr[i].replace(/\.|\-/g, "_")).toLowerCase();
 
 					//Add to query string
-					if(strEdit != 'na' && strEdit != '')
+					if(parsedSample != 'na' && parsedSample != '')
 					{
-						getHeatmapDataQuery = getHeatmapDataQuery.concat(strEdit);
+						getHeatmapDataQuery = getHeatmapDataQuery.concat(parsedSample);
 					}
 					if(i != sampleResultArr.length - 1)
 					{
-						if(strEdit != 'na' && strEdit != '')
+						if(parsedSample != 'na' && parsedSample != '')
 						{
 							getHeatmapDataQuery = getHeatmapDataQuery.concat(", ");
 						}
@@ -142,10 +141,10 @@ async function heatmapData(req, res, next){
 							}
 							getHeatmapDataQuery = getHeatmapDataQuery.concat(" FROM ").concat(heatmapQueries.cancerTableName).concat("_SPLICE ");
 						}
-						//Change UIDsubMakeQuery to signatureMatchQuery
-						if(UIDsubMakeQuery != undefined)//Check for normal signature filter
+						//Change UIDSforHeatmapQuery to signatureMatchQuery
+						if(signatureUIDSforHeatmapQuery != undefined)//Check for normal signature filter
 						{
-							getHeatmapDataQuery = getHeatmapDataQuery.concat(UIDsubMakeQuery);
+							getHeatmapDataQuery = getHeatmapDataQuery.concat(signatureUIDSforHeatmapQuery);
 						}
 						else if(heatmapQueries.geneQuery != undefined)//Check for 
 						{
@@ -173,9 +172,9 @@ async function heatmapData(req, res, next){
 					}
 					getHeatmapDataQuery = getHeatmapDataQuery.concat(" FROM ").concat(heatmapQueries.cancerTableName).concat("_SPLICE ");
 				}
-				if(UIDsubMakeQuery != undefined)//Check for normal signature filter
+				if(signatureUIDSforHeatmapQuery != undefined)//Check for normal signature filter
 				{
-					getHeatmapDataQuery = getHeatmapDataQuery.concat(UIDsubMakeQuery);
+					getHeatmapDataQuery = getHeatmapDataQuery.concat(signatureUIDSforHeatmapQuery);
 				}
 				else if(heatmapQueries.geneQuery != undefined)//Check for 
 				{

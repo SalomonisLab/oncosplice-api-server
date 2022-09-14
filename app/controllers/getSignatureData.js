@@ -11,49 +11,48 @@ async function getSignatureData(req, res, next){
 			var selectedField = postedData.selectedField;
 			var prevFields = postedData.prevFields;
 			var queryHelperMap = databaseQueryHelper(cancerType);
-			let singleBaseQuery = queryHelperMap["SIG"]["COUNT"].concat(" WHERE");
-			let singleFullBaseQuery = queryHelperMap["SIG"]["QUERY"].concat(" WHERE");
-			let singleBaseFlag = 0;
-			let metaBaseQuery = queryHelperMap["SIG"]["COUNT"].concat(" WHERE");
-			let metaBaseCount = 0;
+			let selectedSignatureQuery = queryHelperMap["SIG"]["COUNT"].concat(" WHERE");
+			let signatureDataQuery = queryHelperMap["SIG"]["QUERY"].concat(" WHERE");
+			let cumulativeSignatureQuery = queryHelperMap["SIG"]["COUNT"].concat(" WHERE");
+			let cumulativeSignatureCount = 0;
 
 			selectedField = selectedField.replace("+", "_",);
-			singleBaseQuery = singleBaseQuery.concat(" ").concat(selectedField).concat(" = '1'");
-			singleFullBaseQuery = singleFullBaseQuery.concat(" ").concat(selectedField).concat(" = '1'");
+			selectedSignatureQuery = selectedSignatureQuery.concat(" ").concat(selectedField).concat(" = '1'");
+			signatureDataQuery = signatureDataQuery.concat(" ").concat(selectedField).concat(" = '1'");
 
 			prevFields.forEach(field => {
-					if(metaBaseCount != 0)
+					if(cumulativeSignatureCount != 0)
 					{
 						field = field.replace("+", "_");
-				    	metaBaseQuery = metaBaseQuery.concat(" OR ").concat(field).concat(" = '1'");
+				    	cumulativeSignatureQuery = cumulativeSignatureQuery.concat(" OR ").concat(field).concat(" = '1'");
 					}
 					else
 					{
 						field = field.replace("+", "_");
-						metaBaseQuery = metaBaseQuery.concat(" ").concat(field).concat(" = '1'");
+						cumulativeSignatureQuery = cumulativeSignatureQuery.concat(" ").concat(field).concat(" = '1'");
 					}
-				    metaBaseCount = metaBaseCount + 1;				
+				    cumulativeSignatureCount += 1;				
 			})
-			let metaResult = await dbCredentials.query(metaBaseQuery);
-			metaNumRows = metaResult.rows[0]["count"];
+			let cumulativeSignatureResult = await dbCredentials.query(cumulativeSignatureQuery);
+			cumulativeSignatureRows = cumulativeSignatureResult.rows[0]["count"];
 
-			let singleResult = await dbCredentials.query(singleBaseQuery);
-			singleNumRows = singleResult.rows[0]["count"];
+			let selectedSignatureResult = await dbCredentials.query(selectedSignatureQuery);
+			selectedSignatureNumRows = selectedSignatureResult.rows[0]["count"];
 
-			let singleFullResult = await dbCredentials.query(singleFullBaseQuery);
+			let signatureDataResult = await dbCredentials.query(signatureDataQuery);
 
-			let singleArray = [];
-			let singleCount = 0;
+			let signatureDataArray = [];
+			let signatureCount = 0;
 
-			singleFullResult.rows.forEach(row => {
-				singleArray[singleCount] = row["uid"];
-				singleCount += 1;
+			signatureDataResult.rows.forEach(row => {
+				signatureDataArray[signatureCount] = row["uid"];
+				signatureCount += 1;
 			})
-			outputObject["single"] = singleNumRows;
-			outputObject["singlequery"] = singleBaseQuery;
-			outputObject["meta"] = metaNumRows;
-			outputObject["metaquery"] = metaBaseQuery;
-			outputObject["result"] = singleArray;
+			outputObject["single"] = selectedSignatureNumRows;
+			outputObject["singlequery"] = selectedSignatureQuery;
+			outputObject["meta"] = cumulativeSignatureRows;
+			outputObject["metaquery"] = cumulativeSignatureQuery;
+			outputObject["result"] = signatureDataArray;
 			res.send(outputObject);		
 
 		}
