@@ -11,6 +11,7 @@ const { cbioportalCurlCommand } = require("../controllers/cbioportalCurlCommand"
 const { getExonViewerData } = require("../controllers/getExonViewerData");
 const { getInteractiveFilter } = require("../controllers/getInteractiveFilter");
 const { cbioportalStudyTranslate } = require("../controllers/cbioportalStudyTranslate");
+const { defaultQuery } = require("../controllers/defaultQuery");
 
 module.exports = app => {
     //const datasets = require("../controllers/cancerdata.controller.js");
@@ -33,6 +34,7 @@ module.exports = app => {
     router.post("/getcbio", cbioportalCurlCommand);
     router.post("/getexonviewerdata", getExonViewerData);
     router.post("/translatecbio", cbioportalStudyTranslate);
+    router.post("/defaultquery", defaultQuery);
     app.use('/api/datasets', router);
 
 };

@@ -40,7 +40,7 @@ function setUpHeatmapQuery(postedData)
 	let coords = postedData.coords;
 	let genes = postedData.genes;
 	let signatures = postedData.signatures;
-	let metadata = postedData.metadata;
+	let samples = postedData.samples;
 	let oncospliceClusters = postedData.oncospliceClusters;
 
 	var heatmapQueries = {
@@ -49,7 +49,7 @@ function setUpHeatmapQuery(postedData)
 		"coordQuery" : undefined,
 		"geneQuery" : undefined,
 		"signatureQuery" : undefined,
-		"metadataQuery" : undefined,
+		"sampleQuery" : undefined,
 		"oncospliceClusterQuery" : {
 			exists: false,
 			key: undefined
@@ -104,28 +104,28 @@ function setUpHeatmapQuery(postedData)
 			}				
 		})
 	}
-	if(metadata != undefined)
+	if(samples != undefined)
 	{
 		//Determine if it is numerical or string
-		metadata.forEach(object => {
+		samples.forEach(object => {
 			if(object.value.indexOf("-") != -1)
 			{
 				let numbersToSearch = object.value.split("-");
-				if(heatmapQueries.metadataQuery != undefined){
-					heatmapQueries.metadataQuery = " AND ".concat(object.key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
+				if(heatmapQueries.samplesQuery != undefined){
+					heatmapQueries.samplesQuery = " AND ".concat(object.key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
 				}
 				else{
-					heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(object.key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
+					heatmapQueries.samplesQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(object.key).concat(" >= '").concat(numbersToSearch[0]).concat("'");
 				}
-				heatmapQueries.metadataQuery = " AND ".concat(object.key).concat(" <= '").concat(numbersToSearch[1]).concat("'");
+				heatmapQueries.samplesQuery = " AND ".concat(object.key).concat(" <= '").concat(numbersToSearch[1]).concat("'");
 			}
 			else
 			{
-				if(heatmapQueries.metadataQuery != undefined){
-                	heatmapQueries.metadataQuery = " AND ".concat(object.key).concat(" = '").concat(object.value).concat("'");
+				if(heatmapQueries.samplesQuery != undefined){
+                	heatmapQueries.samplesQuery = " AND ".concat(object.key).concat(" = '").concat(object.value).concat("'");
                 }
                 else{
-                    heatmapQueries.metadataQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(object.key).concat(" = '").concat(object.value).concat("'");
+                    heatmapQueries.samplesQuery = "SELECT * FROM ".concat(cancerTableName).concat("_META WHERE ").concat(object.key).concat(" = '").concat(object.value).concat("'");
                 }
 			}
 		});

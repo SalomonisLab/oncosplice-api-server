@@ -92,11 +92,11 @@ async function heatmapData(req, res, next){
 			var sampleResultArr = [];
 
 			//First query for sample ids. Will need to be changed to be contructed in depth.
-			//Change to sample data. NOT metadata.
-			if(heatmapQueries.metadataQuery != undefined)
+			//Change to sample data. NOT samples.
+			if(heatmapQueries.samplesQuery != undefined)
 			{
-				var metaDataResult = await dbCredentials.query(heatmapQueries.metadataQuery);
-				metaDataResult.rows.forEach(row => {
+				var samplesResult = await dbCredentials.query(heatmapQueries.samplesQuery);
+				samplesResult.rows.forEach(row => {
 				  sampleResultArr[sampleResultArr.length] = row["uid"];
 				})
 			}
@@ -125,7 +125,7 @@ async function heatmapData(req, res, next){
 					else
 					{
 
-						if(heatmapQueries.metadataQuery == undefined)
+						if(heatmapQueries.samplesQuery == undefined)
 						{
 							getHeatmapDataQuery = "SELECT * FROM ".concat(heatmapQueries.cancerTableName).concat("_SPLICE ");
 						}
@@ -156,7 +156,7 @@ async function heatmapData(req, res, next){
 			}
 			else
 			{
-				if(heatmapQueries.metadataQuery == undefined)
+				if(heatmapQueries.samplesQuery == undefined)
 				{
 					getHeatmapDataQuery = "SELECT * FROM ".concat(heatmapQueries.cancerTableName).concat("_SPLICE ");
 				}
