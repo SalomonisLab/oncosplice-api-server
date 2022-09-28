@@ -1,9 +1,5 @@
 const { samples } = require("../controllers/samples");
-const { getSelectedSamples } = require("../controllers/getSelectedSamples");
-const { getSignatureData } = require("../controllers/getSignatureData");
-const { matchCoordinatesPreSubmission } = require("../controllers/matchCoordinatesPreSubmission");
-const { matchGenesPreSubmission } = require("../controllers/matchGenesPreSubmission");
-const { newSignature } = require("../controllers/newSignature");
+const { sigantures } = require("../controllers/signatures");
 const { heatmapData } = require("../controllers/heatmap/heatmapData");
 const { getSingleUidData } = require("../controllers/getSingleUidData");
 const { getGtexData } = require("../controllers/getGtexData");
@@ -21,13 +17,8 @@ module.exports = app => {
     // Retrieve all Datasets
     //router.get("/", datasets.testQuery);
 
-    router.post("/samples", samples);
-    //Replace "samples" with something else, double check that we don't need it
-    //router.post("/samples", getSelectedSamples);
-    router.post("/signatureData", getSignatureData);
-    router.post("/updateSignatures", newSignature);
-    router.post("/matchedCoordinates", matchCoordinatesPreSubmission);
-    router.post("/genes", matchGenesPreSubmission);
+    router.post("/sampleData", samples);
+    router.post("/signatures", signatures);
     router.post("/heatmapData",heatmapData);
     router.post("/singleUidData", getSingleUidData);
     router.post("/interactiveFilter", getInteractiveFilter);
