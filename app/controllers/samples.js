@@ -73,9 +73,9 @@ async function samples(req, res, next){
 	    numRows = numRows.rows[0]["count"];
 	    const countColSplcQuery = await dbCredentials.query(queryHelperMap["SPLC"]["ONE"]);
 	    var numSamples = Object.keys(countColSplcQuery.rows[0]).length - 11;
-	    outputObject["qbox"] = {};
-	    outputObject["qbox"]["columns"] = numSamples;
-	    outputObject["qbox"]["rows"] = numRows;
+	    outputObject["numberOfResults"] = {};
+	    outputObject["numberOfResults"]["columns"] = numSamples;
+	    outputObject["numberOfResults"]["rows"] = numRows;
 		await Promise.all(promises);
 		res.send(outputObject);
 
