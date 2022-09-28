@@ -23,18 +23,18 @@ module.exports = app => {
 
     router.post("/ui", getUI);
     router.post("/samples", getSelectedSamples);
-    router.post("/signaturedata", getSignatureData);
-    router.post("/updatesignatures", newSignature);
-    router.post("/matchedcoordinates", matchCoordinatesPreSubmission);
+    router.post("/signatureData", getSignatureData);
+    router.post("/updateSignatures", newSignature);
+    router.post("/matchedCoordinates", matchCoordinatesPreSubmission);
     router.post("/genes", matchGenesPreSubmission);
-    router.post("/heatmapdata",heatmapData);
-    router.post("/singleuiddata", getSingleUidData);
-    router.post("/interactivefilter", getInteractiveFilter);
-    router.post("/gtexdata", getGtexData);
-    router.post("/cbiocurlcommand", cbioportalCurlCommand);
-    router.post("/exonviewerdata", getExonViewerData);
+    router.post("/heatmapData",heatmapData);
+    router.post("/singleUidData", getSingleUidData);
+    router.post("/interactiveFilter", getInteractiveFilter);
+    router.post("/gtexData", getGtexData);
+    router.post("/cbioCurlCommand", cbioportalCurlCommand);
+    router.post("/exonViewerData", getExonViewerData);
     router.post("/translatecbio", cbioportalStudyTranslate);
-    router.post("/defaultquery", defaultQuery);
+    router.post("/defaultQuery", defaultQuery);
     app.use('/api/datasets', router);
 
 };
