@@ -1,4 +1,4 @@
-const { getUI } = require("../controllers/getUI");
+const { samples } = require("../controllers/samples");
 const { getSelectedSamples } = require("../controllers/getSelectedSamples");
 const { getSignatureData } = require("../controllers/getSignatureData");
 const { matchCoordinatesPreSubmission } = require("../controllers/matchCoordinatesPreSubmission");
@@ -21,8 +21,9 @@ module.exports = app => {
     // Retrieve all Datasets
     //router.get("/", datasets.testQuery);
 
-    router.post("/ui", getUI);
-    router.post("/samples", getSelectedSamples);
+    router.post("/samples", samples);
+    //Replace "samples" with something else, double check that we don't need it
+    //router.post("/samples", getSelectedSamples);
     router.post("/signatureData", getSignatureData);
     router.post("/updateSignatures", newSignature);
     router.post("/matchedCoordinates", matchCoordinatesPreSubmission);
