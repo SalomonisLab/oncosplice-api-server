@@ -1,3 +1,5 @@
+##Oncosplice Server
+
 This is a Node.js server for interacting with postgres server. 
 
 What does a server do?
@@ -16,16 +18,7 @@ To initialize this project do the following steps:
 
    -s is a shorthand alias for --save , you can use either. This is a tag you can add to your npm install command to automatically save it to your package.json.
 
-5. React.js or any other js framework look for index.js files as the entry point for that particular directory.
-
-
-To add new dependencies: 
-
-const <variable name> = require('<name of the package>')
-
-<variable name> - arbitrary name
-
-"require" - require() is a built-in Node function that lets you gain access to another Node file’s code. You use this for every dependency you bring into your Node server, and you can also write your own Node files and import them into your main server file the same way.
-
-<name-of-package> should be the exact name of the folder or file you wish to import 
-
+Make sure you're logged in to the correct vpn, and type http://localhost:8081/api/datasets/cancerdata into Postman's POST request. Use raw json data as input; here's an example you can use.
+´{
+    "data": "GBM"
+}´

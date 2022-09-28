@@ -5,6 +5,7 @@
 // create instance of app object in Express
 const express = require('express');
 const app = express();
+app.use(express.bodyParser({limit: '50mb'}));
 const port = process.env.PORT || 5000;
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
