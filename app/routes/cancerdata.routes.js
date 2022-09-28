@@ -21,20 +21,20 @@ module.exports = app => {
     // Retrieve all Datasets
     //router.get("/", datasets.testQuery);
 
-    router.post("/getui", getUI);
-    router.post("/getsamples", getSelectedSamples);
-    router.post("/getsignaturedata", getSignatureData);
-    router.post("/updatesignatures", newSignature);
-    router.post("/getcoords", matchCoordinatesPreSubmission);
-    router.post("/getgenes", matchGenesPreSubmission);
-    router.post("/getheatmapdata",heatmapData);
-    router.post("/getsingleuid", getSingleUidData);
-    router.post("/getinteractivefilter", getInteractiveFilter);
-    router.post("/getgtex", getGtexData);
-    router.post("/getcbio", cbioportalCurlCommand);
-    router.post("/getexonviewerdata", getExonViewerData);
+    router.post("/ui", getUI);
+    router.post("/samples", getSelectedSamples);
+    router.post("/signatureData", getSignatureData);
+    router.post("/updateSignatures", newSignature);
+    router.post("/matchedCoordinates", matchCoordinatesPreSubmission);
+    router.post("/genes", matchGenesPreSubmission);
+    router.post("/heatmapData",heatmapData);
+    router.post("/singleUidData", getSingleUidData);
+    router.post("/interactiveFilter", getInteractiveFilter);
+    router.post("/gtexData", getGtexData);
+    router.post("/cbioCurlCommand", cbioportalCurlCommand);
+    router.post("/exonViewerData", getExonViewerData);
     router.post("/translatecbio", cbioportalStudyTranslate);
-    router.post("/defaultquery", defaultQuery);
+    router.post("/defaultQuery", defaultQuery);
     app.use('/api/datasets', router);
 
 };
