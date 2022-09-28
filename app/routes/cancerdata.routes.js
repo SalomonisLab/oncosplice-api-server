@@ -1,5 +1,5 @@
 const { samples } = require("../controllers/samples");
-const { sigantures } = require("../controllers/signatures");
+const { signatures } = require("../controllers/signatures");
 const { heatmapData } = require("../controllers/heatmap/heatmapData");
 const { getSingleUidData } = require("../controllers/getSingleUidData");
 const { getGtexData } = require("../controllers/getGtexData");

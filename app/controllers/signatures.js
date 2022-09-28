@@ -1,11 +1,10 @@
-const fs = require('fs');
 const { dbCredentials } = require("../config/oncodb.config.js");
-const { removeNewlinesAndUnderscores, changeSpecialCharsToBlank, cleanUpTranslator, convertToUnderscores } = require("../utilities/parsingFunctions.js");
+const { cleanUpTranslator } = require("../utilities/parsingFunctions.js");
 const { databaseQueryHelper } = require("./databasequeryhelper.js");
 const { containsObject } = require("../utilities/generalFunctions.js")
 
 //This function records the number of samples that exist for a given selection.
-async function newSignature(req, res, next){
+async function signatures(req, res, next){
 	if (req.method == 'POST') {
 		try{
 			let outputObject = {};
@@ -44,4 +43,4 @@ async function newSignature(req, res, next){
 	}
 }
 
-module.exports.newSignature = newSignature;
+module.exports.signatures = signatures;

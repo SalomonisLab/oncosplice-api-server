@@ -188,9 +188,9 @@ async function heatmapData(req, res, next){
 
 			var queryResult = await dbCredentials.query(getHeatmapDataQuery);
 
-			outputObject["cancer"] = req.body.data.cancerName;
-			outputObject["oncokey"] = heatmapQueries.oncospliceClusterQuery.key;
-			outputObject["rpsi"] = oncospliceClustersDict;
+			outputObject["cancerType"] = req.body.data.cancerName;
+			outputObject["oncospliceClusterName"] = heatmapQueries.oncospliceClusterQuery.key;
+			outputObject["oncospliceClusterIndices"] = oncospliceClustersDict;
 
 			var generatedUUID = uuid.v4();
 			
