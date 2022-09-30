@@ -27,4 +27,4 @@ In our case it could be as simple as this (as a bash script):
 
 #!/bin/bash
 
-rm -rf ./node_modules/.cache && npm run $*
+rm -rf ./node_modules/.cache && node server.js $*
